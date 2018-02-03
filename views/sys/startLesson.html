@@ -1,105 +1,54 @@
 <!-- Demo version: 2017.12.17 by vanpersie -->
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>5i-english</title>
-
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-
-    <!-- <link rel="stylesheet" href="style.css"> -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-
-
-    <style>
-        video {
-            object-fit: fill;
-            width: 40%;
-            height: 220px;
-        }
-        video:first-child {
-            margin-left:25px;
-        }
-        video:last-child {
-            margin-left:125px;
-        }
-        button,
-        input,
-        select {
-            font-weight: normal;
-            padding: 2px 4px;
-            text-decoration: none;
-            display: inline-block;
-            text-shadow: none;
-            font-size: 16px;
-            outline: none;
-        }
-        .make-center {
-            text-align: center;
-            padding: 5px 10px;
-        }
-        .my-video {
-            height: 220px;
-            border-bottom: 1px solid #eee;
-        }
-        .my-video div:first-child {
-            border-left: 1px solid #eee;
-        }
-        .my-video div {
-            border-right: 1px solid #eee;
-        }
-        #input-text-chat {
-            height: 35px;
-            width: 100%;
-        }
-        .chat-output {
-            height: 182px;
-            overflow-y:scroll;
-        }
-        #room-id {
-            width: 400px;
-        }
-    </style>
+    <meta name="description" content="5ienglish" />
+    <meta name="keywords" content="5ienglish" />
+    <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
 </head>
-
 <body>
-
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">5I English</a>
+    <div style="color: #00CED1;">我们一起学英语，走遍世界</div>
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#">退出</a>
+        </li>
+    </ul>
+</nav>
 <div class="container-fluid">
-  <div class="row my-video">
-    <div class="col-8" id="videos-container">
-        
-    </div>
-    <div class="col-4 align-self-end">
-      <div class="chat-output">
-          
-      </div>
-      <div style="margin-bottom: 2px;">
-          <input type="text" id="input-text-chat" placeholder="请发言，按回车发送！" disabled>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-        <input type="text" id="room-id" value="" placeholder="请用老师ID号作为房间名！">
-        <button id="open-room">打开课堂</button>
-        <button id="join-room">加入课堂</button>
-        <button id="btn-share-part-of-sreen" disabled>分享课件</button>
-        <div id="room-urls" style="text-align: center; float:right; width: 300px; padding: 5px 10px;"></div>
-  </div>
-  <img id="shared-part-of-screen-preview" style="max-width:100%;">
-  <div class="row">
-       <iframe id="part-of-screen-to-be-shared" src="/demos/pptdemo/publish/demo.html" width="80%;" height="400px;"></iframe>
-<!--       <img src="pptdemo/publish/girl.jpg"> -->
-
-  </div>
+        <div class="row">
+            <div class="col-xs-6 col-md-4 common-border">
+                <div style="height: 95px;">
+                    <input type="hidden" id="room-id" value="" placeholder="请用老师ID号作为房间名！"></br>
+                    <button type="button" id="open-room" class="btn btn-primary">打开课堂</button>
+                    <button type="button" id="join-room" class="btn btn-success">加入课堂</button>
+                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-info" disabled>分享课件</button>
+                    <div id="room-urls"></div>
+                </div>
+                <div class="row" id="videos-container">
+                </div>
+                <!--
+                <div class="row align-self-end">
+                    <div class="chat-output">
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <input type="text" id="input-text-chat" placeholder="请发言，按回车发送！" disabled>
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="col-xs-12 col-md-8 common-border">
+                <iframe id="part-of-screen-to-be-shared" src="/demos/pptdemo/publish/demo.html" width="80%;" height="400px;"></iframe>
+            </div>
+        </div>
 </div>
-
-
-        <script src="/dist/RTCMultiConnection.min.js"></script>
+        <script src="/RTCMultiConnection.min.js"></script>
         <script src="/dev/PubNubConnection.js"></script>
         <script src="/dev/FileBufferReader.js"></script>
         <script src="/dev/websocket.js"></script>
@@ -133,19 +82,19 @@
             //     });
             // };
 
-            document.getElementById('input-text-chat').onkeyup = function(e) {
-                if (e.keyCode != 13) return;
+//            document.getElementById('input-text-chat').onkeyup = function(e) {
+//                if (e.keyCode != 13) return;
+//
+//                // removing trailing/leading whitespace
+//                this.value = this.value.replace(/^\s+|\s+$/g, '');
+//                if (!this.value.length) return;
+//
+//                connection.send(this.value);
+//                appendDIV(this.value);
+//                this.value = '';
+//            };
 
-                // removing trailing/leading whitespace
-                this.value = this.value.replace(/^\s+|\s+$/g, '');
-                if (!this.value.length) return;
-
-                connection.send(this.value);
-                appendDIV(this.value);
-                this.value = '';
-            };
-
-            var chatContainer = document.querySelector('.chat-output');
+//            var chatContainer = document.querySelector('.chat-output');                //updated by ydl
 
             function appendDIV(event) {
                 var div = document.createElement('div');
@@ -162,6 +111,7 @@
             // ......................................................
 
             var connection = new RTCMultiConnection();
+            var peopleNum = 0;
 
             connection.socketMessageEvent = 'pubnub-demo';
 
@@ -182,6 +132,10 @@
 
             connection.videosContainer = document.getElementById('videos-container');
             connection.onstream = function(event) {
+                if (++peopleNum>2) {
+                    alert('课堂已满！');
+                    return;
+                }
                 connection.videosContainer.appendChild(event.mediaElement);
                 event.mediaElement.play();
                 setTimeout(function() {
@@ -297,7 +251,7 @@
                     },
                     grabMouse: true
                 });
-                
+
             };
         </script>
 
@@ -305,7 +259,8 @@
             // window.useThisGithubPath = 'muaz-khan/RTCMultiConnection';
         </script>
         <script src="/dev/commits.js" async></script>
-        <script type="text/javascript" src="thirdlib/jquery.min.js"></script>
+        <script src="/jquery.min.js" type="text/javascript" ></script>
+        <script  src="/bootstrap-4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
 </body>
 
 </html>

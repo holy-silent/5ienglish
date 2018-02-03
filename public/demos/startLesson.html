@@ -1,0 +1,266 @@
+<!-- Demo version: 2017.12.17 by vanpersie -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>5i-english</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="5ienglish" />
+    <meta name="keywords" content="5ienglish" />
+    <link href="/dist/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/dist/css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">5I English</a>
+    <div style="color: #00CED1;">我们一起学英语，走遍世界</div>
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#">退出</a>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-md-4 common-border">
+                <div style="height: 95px;">
+                    <input type="hidden" id="room-id" value="" placeholder="请用老师ID号作为房间名！"></br>
+                    <button type="button" id="open-room" class="btn btn-primary">打开课堂</button>
+                    <button type="button" id="join-room" class="btn btn-success">加入课堂</button>
+                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-info" disabled>分享课件</button>
+                    <div id="room-urls"></div>
+                </div>
+                <div class="row" id="videos-container">
+                </div>
+                <!--
+                <div class="row align-self-end">
+                    <div class="chat-output">
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <input type="text" id="input-text-chat" placeholder="请发言，按回车发送！" disabled>
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="col-xs-12 col-md-8 common-border">
+                <iframe id="part-of-screen-to-be-shared" src="/demos/pptdemo/publish/demo.html" width="80%;" height="400px;"></iframe>
+            </div>
+        </div>
+</div>
+        <script src="/dist/RTCMultiConnection.min.js"></script>
+        <script src="/dev/PubNubConnection.js"></script>
+        <script src="/dev/FileBufferReader.js"></script>
+        <script src="/dev/websocket.js"></script>
+        <script src="/dev/screenshot.js"> </script>
+
+        <script>
+            // ......................................................
+            // .......................UI Code........................
+            // ......................................................
+
+            document.getElementById('open-room').onclick = function() {
+                disableInputButtons();
+                connection.open(document.getElementById('room-id').value, function() {
+                    showRoomURL(connection.sessionid);
+                });
+            };
+
+            document.getElementById('join-room').onclick = function() {
+                disableInputButtons();
+                connection.join(document.getElementById('room-id').value);
+            };
+
+            // ......................................................
+            // ................FileSharing/TextChat Code.............
+            // ......................................................
+
+            // document.getElementById('share-file').onclick = function() {
+            //     var fileSelector = new FileSelector();
+            //     fileSelector.selectSingleFile(function(file) {
+            //         connection.send(file);
+            //     });
+            // };
+
+//            document.getElementById('input-text-chat').onkeyup = function(e) {
+//                if (e.keyCode != 13) return;
+//
+//                // removing trailing/leading whitespace
+//                this.value = this.value.replace(/^\s+|\s+$/g, '');
+//                if (!this.value.length) return;
+//
+//                connection.send(this.value);
+//                appendDIV(this.value);
+//                this.value = '';
+//            };
+
+//            var chatContainer = document.querySelector('.chat-output');                //updated by ydl
+
+            function appendDIV(event) {
+                var div = document.createElement('div');
+                div.innerHTML = event.data || event;
+                chatContainer.insertBefore(div, chatContainer.firstChild);
+                div.tabIndex = 0;
+                div.focus();
+
+                document.getElementById('input-text-chat').focus();
+            }
+
+            // ......................................................
+            // ..................RTCMultiConnection Code.............
+            // ......................................................
+
+            var connection = new RTCMultiConnection();
+            var peopleNum = 0;
+
+            connection.socketMessageEvent = 'pubnub-demo';
+
+            connection.setCustomSocketHandler(PubNubConnection);
+
+            connection.enableFileSharing = true; // by default, it is "false".
+
+            connection.session = {
+                audio: true,
+                video: true,
+                data: true
+            };
+
+            connection.sdpConstraints.mandatory = {
+                OfferToReceiveAudio: true,
+                OfferToReceiveVideo: true
+            };
+
+            connection.videosContainer = document.getElementById('videos-container');
+            connection.onstream = function(event) {
+                if (++peopleNum>2) {
+                    alert('课堂已满！');
+                    return;
+                }
+                connection.videosContainer.appendChild(event.mediaElement);
+                event.mediaElement.play();
+                setTimeout(function() {
+                    event.mediaElement.play();
+                }, 5000);
+            };
+
+            connection.onmessage = appendDIV;
+            connection.filesContainer = document.getElementById('file-container');
+
+            connection.onopen = function() {
+                // document.getElementById('share-file').disabled = false;
+                document.getElementById('input-text-chat').disabled = false;
+                if(!lastSharedScreenShot.length) {
+                    document.getElementById('btn-share-part-of-sreen').disabled = false;
+                }
+            };
+
+            function disableInputButtons() {
+                connection.channel = document.getElementById('room-id').value;
+
+                document.getElementById('open-room').disabled = true;
+                document.getElementById('join-room').disabled = true;
+                document.getElementById('room-id').disabled = true;
+            }
+
+            // ......................................................
+            // ......................Handling Room-ID................
+            // ......................................................
+
+            function showRoomURL(roomid) {
+                var roomHashURL = '#' + roomid;
+                var roomQueryStringURL = '?roomid=' + roomid;
+
+                // var html = '<h2>Unique URL for your room:</h2><br>';
+
+                // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
+                // html += '<br>';
+                // html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+                var html = '课堂地址: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+
+                var roomURLsDiv = document.getElementById('room-urls');
+                roomURLsDiv.innerHTML = html;
+                roomURLsDiv.style.display = 'block';
+            }
+
+            (function() {
+                var params = {},
+                    r = /([^&=]+)=?([^&]*)/g;
+
+                function d(s) {
+                    return decodeURIComponent(s.replace(/\+/g, ' '));
+                }
+                var match, search = window.location.search;
+                while (match = r.exec(search.substring(1)))
+                    params[d(match[1])] = d(match[2]);
+                window.params = params;
+            })();
+
+            var roomid = '';
+            if (localStorage.getItem(connection.socketMessageEvent)) {
+                roomid = localStorage.getItem(connection.socketMessageEvent);
+            } else {
+                roomid = connection.token();
+            }
+            document.getElementById('room-id').value = roomid;
+            document.getElementById('room-id').onkeyup = function() {
+                localStorage.setItem(connection.socketMessageEvent, this.value);
+            };
+
+            var hashString = location.hash.replace('#', '');
+            if(hashString.length && hashString.indexOf('comment-') == 0) {
+              hashString = '';
+            }
+
+            var roomid = params.roomid;
+            if(!roomid && hashString.length) {
+                roomid = hashString;
+            }
+
+            if(roomid && roomid.length) {
+                document.getElementById('room-id').value = roomid;
+                localStorage.setItem(connection.socketMessageEvent, roomid);
+
+                disableInputButtons();
+
+                // auto-join-room
+                connection.join(roomid);
+            }
+
+            //分享区域
+            document.getElementById('btn-share-part-of-sreen').onclick = function() {
+                this.disabled = true;
+                // connection.sharePartOfScreen(document.getElementById('part-of-screen-to-be-shared'));
+                connection.sharePartOfScreen($('#part-of-screen-to-be-shared').contents().find('body'));
+            };
+            var sharedPartOfScreenPreview = document.getElementById('shared-part-of-screen-preview');
+            connection.onmessage = function(event) {
+                sharedPartOfScreenPreview.src = event.data;
+            };
+            var lastSharedScreenShot = '';
+            connection.sharePartOfScreen = function(element) {
+                html2canvas(element, {
+                    onrendered: function(canvas) {
+                        var screenshot = canvas.toDataURL('image/png', 1);
+                        // var screenshot = canvas.toDataURL();
+                        if(screenshot === lastSharedScreenShot) {
+                            connection.sharePartOfScreen(element);
+                            return;
+                        }
+                        connection.send(screenshot);
+                        connection.sharePartOfScreen(element);
+                    },
+                    grabMouse: true
+                });
+
+            };
+        </script>
+
+        <script>
+            // window.useThisGithubPath = 'muaz-khan/RTCMultiConnection';
+        </script>
+        <script src="/dev/commits.js" async></script>
+        <script src="/dist/jquery.min.js" type="text/javascript" ></script>
+        <script  src="/dist/bootstrap-4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
+</body>
+
+</html>
