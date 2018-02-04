@@ -2,6 +2,7 @@
  * Created by vanpersie on 2018/2/3.
  */
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -27,17 +28,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var identityKey = 'skey';
+app.use(session({
+    name: identityKey,
+    secret: '5ienglish',  // 用来对session id相关的cookie进行签名
+    // store: new FileStore(),  // 本地存储session（文本文件，也可以选择其他store，比如redis的）
+    saveUninitialized: false,  // 是否自动保存未初始化的会话，建议false
+    resave: false,  // 是否每次都重新保存会话，建议false
+    cookie: {
+        maxAge: 30 * 60 * 1000  // 有效期，单位是毫秒
+    }
+}));
 
 //登录拦截器
 app.use(function (req, res, next) {
-    var url = req.originalUrl;//获取浏览器中当前访问的nodejs路由地址
-    var userCookies = req.cookies.userCookies; //获取客户端存取的cookie,userCookies为cookie的名称；//有时拿不到cookie值，可能是因为拦截器位置放错，获取该cookie的方式是依赖于nodejs自带的cookie模块，//因此，获取cookie必须在1,2步之后才能使用，否则拿到的cookie就是undefined.
-    console.log("访问URL："+url);
-    console.log("cookie："+req.cookies.userCookies);
+    // var url = req.originalUrl;//获取浏览器中当前访问的nodejs路由地址
+    // var userCookies = req.cookies.userCookies; //获取客户端存取的cookie,userCookies为cookie的名称；//有时拿不到cookie值，可能是因为拦截器位置放错，获取该cookie的方式是依赖于nodejs自带的cookie模块，//因此，获取cookie必须在1,2步之后才能使用，否则拿到的cookie就是undefined.
+    // console.log("访问URL："+url);
+    // console.log("cookie："+req.cookies.userCookies);
 
-    if(url=='/login'&&!(userCookies==undefined)){ //通过判断控制用户登录后不能访问登录页面；
-        return res.redirect('/');//页面重定向；
-    }
+    // if(url=='/login'&&!(userCookies==undefined)){ //通过判断控制用户登录后不能访问登录页面；
+    //     return res.redirect('/');//页面重定向；
+    // }
+    // if(req.session.loginUser == undefined) {
+    //     return res.redirect('/');
+    // }
     next();
 });
 

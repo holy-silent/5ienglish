@@ -5,12 +5,16 @@ var Constant = require('../app/constant.js').Constant;
 
 /* GET home page. */
 index.get('/', function(req, res, next) {
-    var userCookies = req.cookies.userCookies;
-  res.render(Constant.indexPath, {userCookies:userCookies});
+    var user = req.session.loginUser;
+  res.render(Constant.indexPath, {user:user});
 });
 
 index.get('/sys/startLesson', function(req, res, next) {
     res.render(Constant.startLesson);
+});
+
+index.get('/sys/sysIndex', function (req, res, next) {
+    res.render(Constant.sysIndexPath, {user:req.session.loginUser});
 });
 
 index.get('/login', function(req, res, next) {
@@ -33,7 +37,16 @@ index.post('/login', function(req, res, next) {
 
     UserService.getUserList(userPo).then(function (success) {
         if (success instanceof Array && success.length > 0) {
-            res.render(Constant.sysIndexPath);
+            var user = success[0];
+            //session保存到服务端，cookie写回客户端
+            req.session.regenerate(function(err) {
+                if(err){
+                    res.render(Constant.loginPath, {err: '登录失败'});
+                }
+                req.session.loginUser = user;
+                // res.render(Constant.sysIndexPath, {user:user});
+                res.redirect('/sys/sysIndex');
+            });
         } else {
             res.render(Constant.loginPath, {err: '用户名或者密码错误'});
         }
