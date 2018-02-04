@@ -11,8 +11,6 @@ var ejs=require("ejs");
 
 //设置路由
 var index = require('./routes/index');
-// var system = require('./routes/system');
-// var login = require('./routes/login');
 
 var app = express();
 
@@ -45,8 +43,6 @@ app.use(function (req, res, next) {
 
 //配置路由
 app.use('/', index);
-// app.use('/sys', system);
-// app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

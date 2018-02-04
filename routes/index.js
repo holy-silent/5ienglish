@@ -10,11 +10,11 @@ index.get('/', function(req, res, next) {
 });
 
 index.get('/sys/startLesson', function(req, res, next) {
-    res.render('sys/startLesson');
+    res.render(Constant.startLesson);
 });
 
 index.get('/login', function(req, res, next) {
-    res.render(Constant.loginPath);
+    res.render(Constant.loginPath, {err: undefined});
 });
 
 //登录逻辑
