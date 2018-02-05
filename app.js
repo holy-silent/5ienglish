@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var identityKey = 'skey';
+var identityKey = '5ieng';
 app.use(session({
     name: identityKey,
     secret: '5ienglish',  // 用来对session id相关的cookie进行签名
@@ -42,18 +42,22 @@ app.use(session({
 
 //登录拦截器
 app.use(function (req, res, next) {
-    // var url = req.originalUrl;//获取浏览器中当前访问的nodejs路由地址
+    var url = req.originalUrl;//获取浏览器中当前访问的nodejs路由地址
     // var userCookies = req.cookies.userCookies; //获取客户端存取的cookie,userCookies为cookie的名称；//有时拿不到cookie值，可能是因为拦截器位置放错，获取该cookie的方式是依赖于nodejs自带的cookie模块，//因此，获取cookie必须在1,2步之后才能使用，否则拿到的cookie就是undefined.
     // console.log("访问URL："+url);
     // console.log("cookie："+req.cookies.userCookies);
 
-    // if(url=='/login'&&!(userCookies==undefined)){ //通过判断控制用户登录后不能访问登录页面；
-    //     return res.redirect('/');//页面重定向；
-    // }
-    // if(req.session.loginUser == undefined) {
-    //     return res.redirect('/');
-    // }
-    next();
+    if (req.session.loginUser) {
+        next();
+    } else {
+        // 判断请求路径是否为根、登录、注册、登出，如果是不做拦截
+        if (url=='/login' || url=='/' || url=='/register' || url=='/logout') {
+            next();
+        } else {
+            res.redirect('/login');
+        }
+    }
+
 });
 
 //配置路由

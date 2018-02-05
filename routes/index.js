@@ -56,4 +56,9 @@ index.post('/login', function(req, res, next) {
     });
 });
 
+index.get('/logout', function(req, res, next) {
+    delete req.session.loginUser;
+    return res.redirect('/login');
+})
+
 module.exports = index;
