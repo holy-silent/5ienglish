@@ -4,6 +4,7 @@
 "use strict";
 var user = require('../entity/User.js').user;
 var course = require('../entity/User.js').course;
+var courseSelection = require('../entity/User.js').courseSelection;
 var Sequelize = require('sequelize');
 var logger = require('morgan');
 
@@ -61,12 +62,23 @@ var UserService = function(){
         });
     }
 
+    //选课方法
+    var selectCourse = function (currentUser, courseId) {
+        return courseSelection.create({
+            student_id: currentUser.id,
+            course_id: courseId,
+            create_by:currentUser.id,
+            del_flag:'0'
+        });
+    }
+
     return {
         getUserList : getUserList,
         getUserByType : getUserByType,
         getUserById: getUserById,
         getCourseByTeacher : getCourseByTeacher,
-        getCourseList : getCourseList
+        getCourseList : getCourseList,
+        selectCourse: selectCourse
     }
 }();
 

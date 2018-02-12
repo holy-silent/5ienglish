@@ -7,7 +7,13 @@ var Sequelize = require('sequelize');
 
 var dbutil = new Sequelize('5ienglish', 'root', 'root', {
     host: '127.0.0.1',
-    dialect: 'mysql'
+    dialect: 'mysql',
+    pool: {
+        max: 50,
+        min: 5,
+        idle: 3000
+    },
+    timezone: '+08:00' //东八时区
 });
 
 module.exports = dbutil;

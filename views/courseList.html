@@ -13,6 +13,24 @@
     <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/css/album.css" rel="stylesheet">
+
+    <script src="/jquery.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $(".selectCourse").click(function(event){
+          event.preventDefault();
+          var courseId = $(this).attr("data-value");
+          $.post("/front/course/selectCourse",{courseId: courseId},function(result){
+              if (result.response_code=='0000') {
+                alert('恭喜您！选课成功！');
+              }else {
+                alert(result.response_msg);
+              }
+            });
+        });
+      });
+    </script>
   </head>
 
   <body>
@@ -54,7 +72,7 @@
                 <td><%=data[i].course_name%></td>
                 <td><%=data[i].create_date%></td>
                 <td><%=data[i].sys_user.name%></td>
-                <td><a href="/sys/selectCourse" class="btn btn-sm btn-outline-secondary">选课</a></td>
+                <td><a data-value="<%=data[i].id%>" class="btn btn-sm btn-outline-secondary selectCourse">选课</a></td>
               </tr>
             <% }
             } else {%>
@@ -77,10 +95,11 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="/vendor/jquery-slim.min.js"><\/script>')</script>
+    <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+    <!--<script>window.jQuery || document.write('<script src="/vendor/jquery-slim.min.js"><\/script>')</script>-->
     <script src="/vendor/popper.min.js"></script>
     <script src="/bootstrap-4.0.0/js/bootstrap.min.js"></script>
     <script src="/vendor/holder.min.js"></script>
+
   </body>
 </html>

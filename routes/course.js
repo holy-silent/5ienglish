@@ -1,5 +1,5 @@
 /**
- * 老师
+ * 课程
  * Created by vanpersie on 2018/2/11.
  */
 var express = require('express');
@@ -32,6 +32,36 @@ course.get('/', function(req, res, next) {
         }, function (error) {
             console.log(error);
             res.render(Constant.errorPath, {err:'请求出错，请稍后访问网站！'});
+        });
+    }
+});
+
+course.post('/selectCourse', function(req, res, next) {
+    var user = req.session.loginUser;
+    var courseId = req.body.courseId;
+    if (user==undefined) {
+        var result = {};
+        result.response_code='8888';
+        result.response_msg='请先登录网站！';
+        res.json(result);
+    } else {
+        UserService.selectCourse(user, courseId).then(function (success) {
+            var result = {};
+            result.response_code='0000';
+            result.response_msg='success';
+            res.json(result);
+        },function (error) {
+            console.log('error:' + error);
+            var result = {};
+            result.response_code='0000';
+            result.response_msg='选课失败，可能您已选过这门课了';
+            res.json(result);
+        }).catch(function (err) {
+            console.log('err:' + err);
+            var result = {};
+            result.response_code='0000';
+            result.response_msg='选课失败，内部错误：' + err;
+            res.json(result);
         });
     }
 });
