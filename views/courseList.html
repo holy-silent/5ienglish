@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>课程列表</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/album.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <% include header.html %>
+
+    <main role="main">
+
+      <% if (teacher!=undefined) { %>
+      <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading"><%=teacher.name %></h1>
+          <p class="lead text-muted"><%=teacher.remarks %></p>
+        </div>
+      </section>
+      <%}%>
+
+      <div class="table-responsive" style="margin-top:80px;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>课程名称</th>
+              <th>上线时间</th>
+              <th>任课老师</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+
+
+
+            <%
+            if (data.length>0) {
+
+            for (var i=0; i < data.length; i++) { %>
+              <tr>
+                <td><%=i+1%></td>
+                <td><%=data[i].course_name%></td>
+                <td><%=data[i].create_date%></td>
+                <td><%=data[i].sys_user.name%></td>
+                <td><a href="/sys/selectCourse" class="btn btn-sm btn-outline-secondary">选课</a></td>
+              </tr>
+            <% }
+            } else {%>
+            <tr>
+              <td colspan="4" align="center">
+                暂时没有记录！
+              </td>
+            </tr>
+            <% }%>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="container">
+      <p class="float-right"><a href="#">回顶部</a></p>
+      <p>&copy; 2018-2020 5i English版权所有</p>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="/vendor/popper.min.js"></script>
+    <script src="/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+    <script src="/vendor/holder.min.js"></script>
+  </body>
+</html>

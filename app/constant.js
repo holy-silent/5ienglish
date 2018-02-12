@@ -10,7 +10,13 @@ var Constant = function () {
         sysIndexPath : 'sysIndex', //用户主页路径
         errorPath : 'error', //错误页面路径
         indexPath : 'index', //首页页面路径
-        startLesson : 'startLesson' //開始上課頁面
+        startLesson : 'startLesson', //開始上課頁面
+        teacherList : 'teacherList',
+        courseList : 'courseList',
+        userTypeStudent : '0',
+        userTypeTeacher : '1',
+        userTypeAdmin : '2'
+
     }
 }();
 

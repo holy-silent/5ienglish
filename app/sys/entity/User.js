@@ -7,6 +7,7 @@
 // ......................................................
 var dbutil = require('../../database/BaseDao.js');
 var Sequelize = require('sequelize');
+var moment = require('moment');
 
 var UserEntity = dbutil.define('sys_user', {
     id: {
@@ -15,12 +16,42 @@ var UserEntity = dbutil.define('sys_user', {
         autoIncrement: true
     },
     login_name: Sequelize.STRING,
-    password: Sequelize.STRING,
+    // password: Sequelize.STRING,
     name: Sequelize.STRING,
+    user_type: Sequelize.STRING, // 0 学生   1 教室    2 管理员
+    photo: Sequelize.STRING,
+    remarks: Sequelize.STRING,
     del_flag: Sequelize.STRING
 }, {freezeTableName: true,//设置为true时，sequelize不会改变表名，否则可能会按其规则有所调整
     timestamps: false, //为模型添加 createdAt 和 updatedAt 两个时间戳字段
     createdAt: 'createDate',
     updatedAt: 'updateDate'});
 
+var CourseEntity = dbutil.define('sys_course', {
+    id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    course_name: Sequelize.STRING,
+    course_teacher: {
+        type:Sequelize.INTEGER,
+        field: 'course_teacher',
+    },
+    course_desp: Sequelize.STRING,
+    create_date: {
+        type:Sequelize.DATE,
+        get() {
+            return moment(this.getDataValue('create_date')).format('YYYY-MM-DD');
+        }
+    }
+}, {freezeTableName: true,//设置为true时，sequelize不会改变表名，否则可能会按其规则有所调整
+    timestamps: false, //为模型添加 createdAt 和 updatedAt 两个时间戳字段
+    createdAt: 'createDate',
+    updatedAt: 'updateDate'});
+
+// UserEntity.hasMany(CourseEntity, {foreignKey:'course_teacher'});
+CourseEntity.belongsTo(UserEntity, {foreignKey:'course_teacher'});
+
 module.exports.user = UserEntity;
+module.exports.course = CourseEntity;

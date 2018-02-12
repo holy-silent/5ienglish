@@ -12,6 +12,8 @@ var ejs=require("ejs");
 
 //设置路由
 var index = require('./routes/index');
+var teacher = require('./routes/teacher');
+var course = require('./routes/course');
 
 var app = express();
 
@@ -51,7 +53,7 @@ app.use(function (req, res, next) {
         next();
     } else {
         // 判断请求路径是否为根、登录、注册、登出，如果是不做拦截
-        if (url=='/login' || url=='/' || url=='/register' || url=='/logout') {
+        if (url=='/login' || url=='/' || url=='/register' || url=='/logout' || url.indexOf('/front')==0) {
             next();
         } else {
             res.redirect('/login');
@@ -61,7 +63,10 @@ app.use(function (req, res, next) {
 });
 
 //配置路由
+app.use('/front/teacher', teacher);
+app.use('/front/course', course);
 app.use('/', index);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
