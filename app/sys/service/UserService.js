@@ -42,11 +42,17 @@ var UserService = function(){
     }
 
     var getCourseByTeacher = function (teacherId) {
+        var include = [{
+            model: user,
+            as: 'sys_user'
+        }];
+
         return course.findAll({
             where: {
                 course_teacher:teacherId,
                 del_flag: '0'
-            }
+            },
+            include:include
         });
     }
 

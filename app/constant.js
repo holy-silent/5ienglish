@@ -13,9 +13,10 @@ var Constant = function () {
         startLesson : 'startLesson', //開始上課頁面
         teacherList : 'teacherList',
         courseList : 'courseList',
-        userTypeStudent : '0',
-        userTypeTeacher : '1',
-        userTypeAdmin : '2'
+        userList: 'userList',
+        userTypeStudent : '0', //用户类型：学生
+        userTypeTeacher : '1',//用户类型：老师
+        userTypeAdmin : '2'//用户类型：管理员
 
     }
 }();

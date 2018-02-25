@@ -14,7 +14,7 @@ index.get('/sys/startLesson', function(req, res, next) {
 });
 
 index.get('/sys/sysIndex', function (req, res, next) {
-    res.render(Constant.sysIndexPath, {user:req.session.loginUser});
+    res.render(Constant.sysIndexPath, {user:req.session.loginUser,Constant:Constant});
 });
 
 index.get('/login', function(req, res, next) {
