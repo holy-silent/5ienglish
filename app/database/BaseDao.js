@@ -7,6 +7,7 @@ var Sequelize = require('sequelize');
 
 var dbutil = new Sequelize('5ienglish', 'root', 'root', {
     host: '127.0.0.1',
+    port: '3306',
     dialect: 'mysql',
     pool: {
         max: 50,

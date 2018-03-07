@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-xs-6 col-md-4 common-border">
                 <div style="height: 95px;">
-                    <input type="hidden" id="room-id" value="" placeholder="请用老师ID号作为房间名！"></br>
+                    <input type="hidden" id="room-id" value="<%=room_id%>" placeholder="请用老师ID号作为房间名！"></br>
                     <button type="button" id="open-room" class="btn btn-primary">打开课堂</button>
                     <button type="button" id="join-room" class="btn btn-success">加入课堂</button>
                     <button type="button" id="btn-share-part-of-sreen" class="btn btn-info" disabled>分享课件</button>
@@ -201,7 +201,7 @@
             } else {
                 roomid = connection.token();
             }
-            document.getElementById('room-id').value = roomid;
+//            document.getElementById('room-id').value = roomid;  edited by vanpersie 20180308
             document.getElementById('room-id').onkeyup = function() {
                 localStorage.setItem(connection.socketMessageEvent, this.value);
             };
@@ -225,7 +225,6 @@
                 // auto-join-room
                 connection.join(roomid);
             }
-
             //分享区域
             document.getElementById('btn-share-part-of-sreen').onclick = function() {
                 this.disabled = true;

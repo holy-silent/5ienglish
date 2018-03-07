@@ -67,9 +67,27 @@ var CourseSelectionEntity = dbutil.define('sys_course_selection', {
     createdAt: 'create_date',
     updatedAt: 'update_date'});
 
+
+var CourseScheduleEntity = dbutil.define('sys_schedule', {
+    student_id:Sequelize.INTEGER,
+    course_id:Sequelize.INTEGER,
+    schedule_date:{
+        type:Sequelize.DATE,
+        get() {
+            return moment(this.getDataValue('create_date')).format('YYYY-MM-DD HH:MM:SS');
+        }
+    },
+    room_id:Sequelize.STRING
+}, {freezeTableName: true,//设置为true时，sequelize不会改变表名，否则可能会按其规则有所调整
+    timestamps: true, //为模型添加 createdAt 和 updatedAt 两个时间戳字段
+    createdAt: 'create_date',
+    updatedAt: 'update_date'});
+
 // UserEntity.hasMany(CourseEntity, {foreignKey:'course_teacher'});
 CourseEntity.belongsTo(UserEntity, {foreignKey:'course_teacher'});
+CourseSelectionEntity.belongsTo(CourseEntity, {foreignKey:'course_id'});
 
 module.exports.user = UserEntity;
 module.exports.course = CourseEntity;
 module.exports.courseSelection = CourseSelectionEntity;
+module.exports.courseScheduleEntity = CourseScheduleEntity;

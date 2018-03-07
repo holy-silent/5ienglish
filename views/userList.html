@@ -3,8 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>用户管理</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    用户管理
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>登录名</th>
+            <th>姓名</th>
+            <th>用户类型</th>
+            <th>头像</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        <tbody>
+
+
+
+        <%
+        if (data.length>0) {
+
+        for (var i=0; i < data.length; i++) { %>
+        <tr>
+            <td><%=i+1%></td>
+            <td><%=data[i].login_name%></td>
+            <td><%=data[i].name%></td>
+            <td><%= data[i].user_type=='0'? '学生': data[i].user_type=='1'? '老师':'管理员'%></td>
+            <td><%=data[i].photo%></td>
+            <td><%=data[i].remarks%></td>
+        </tr>
+        <% }
+        } else {%>
+        <tr>
+            <td colspan="4" align="center">
+                暂时没有记录！
+            </td>
+        </tr>
+        <% }%>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>已选课程</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>课程列表</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/album.css" rel="stylesheet">
+
+    <script src="/jquery.min.js"></script>
+</head>
+<body>
+    <div class="table-responsive" style="margin-top:80px;min-height:450px;">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>课程名称</th>
+                <th>选课时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <%
+            if (data.length>0) {
+            for (var i=0; i < data.length; i++) { %>
+            <tr>
+                <td><%=i+1%></td>
+                <td><%=data[i].sys_course.course_name%></td>
+                <td><%=data[i].create_date%></td>
+                <td><a href="/admin/schedule?student_id=<%=data[i].student_id%>&course_id=<%=data[i].course_id%>" class="btn btn-sm btn-outline-secondary selectCourse">预约</a>
+                </td>
+            </tr>
+            <% }
+            } else {%>
+            <tr>
+                <td colspan="4" align="center">
+                    暂时没有记录！
+                </td>
+            </tr>
+            <% }%>
+            </tbody>
+        </table>
+    </div>
+
+    <footer class="container">
+        <p class="float-right"><a href="#">回顶部</a></p>
+        <p>&copy; 2018-2020 5i English版权所有</p>
+    </footer>
+
+
+    <script src="/vendor/popper.min.js"></script>
+    <script src="/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+    <script src="/vendor/holder.min.js"></script>
+</body>
+</html>
