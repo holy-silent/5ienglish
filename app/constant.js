@@ -15,6 +15,7 @@ var Constant = function () {
         courseList : 'courseList',
         userList: 'userList',
         courseSelectedList: 'courseSelectedList',
+        schedulePageByTeacher: 'schedulePageByTeacher',
         schedulePage:'schedulePage',
         userTypeStudent : '0', //用户类型：学生
         userTypeTeacher : '1',//用户类型：老师

@@ -8,6 +8,7 @@ var courseSelection = require('../entity/User.js').courseSelection;
 var courseScheduleEntity = require('../entity/User.js').courseScheduleEntity;
 var Sequelize = require('sequelize');
 var logger = require('morgan');
+var dbutil = require('../entity/User.js').dbutil;
 
 
 //用户接口
@@ -50,6 +51,7 @@ var UserService = function(){
         });
     }
 
+    //根据老师获取课程
     var getCourseByTeacher = function (teacherId) {
         var include = [{
             model: user,
@@ -65,6 +67,7 @@ var UserService = function(){
         });
     }
 
+    //得到所有课程
     var getCourseList = function (teacherName) {
         return course.findAll({
             where: {
@@ -86,7 +89,8 @@ var UserService = function(){
             del_flag:'0'
         });
     }
-    
+
+    //学生预约上课时间
     var scheduleCourse = function (student_id, course_id, time, room_id) {
         return courseScheduleEntity.create({
             student_id: student_id,
@@ -95,7 +99,8 @@ var UserService = function(){
             room_id: room_id
         });
     }
-    
+
+    //查找预约
     var findScheduleCourse = function (student_id, course_id) {
         return courseScheduleEntity.findAll({
             where: {
@@ -104,7 +109,7 @@ var UserService = function(){
             }
         });
     }
-    
+    //根据学生查找到选择的课程
     var getSelectedCourseByStudent = function (currentUser) {
         var include = [{
             model: course,
@@ -121,6 +126,23 @@ var UserService = function(){
         });
     }
 
+    //取消预约
+    var cancelScheduledCourse = function (id) {
+        return courseScheduleEntity.destroy({'where':{id:id}});
+    }
+
+    //老师被预约的课程以及时间
+    var schedulePageByTeacher = function (currentUser) {
+        var sql = 'SELECT s.id AS schedule_id, u.name AS student_name , s.schedule_date, c.course_name, s.room_id FROM sys_schedule s';
+        sql += ' LEFT JOIN sys_user u ON s.student_id = u.id';
+        sql += ' LEFT JOIN sys_course c ON c.id = s.course_id';
+        sql += ' WHERE c.course_teacher = $1';
+        sql += ' ORDER BY s.schedule_date;';
+
+        return dbutil.query(sql, {bind:[currentUser.id], type: Sequelize.QueryTypes.SELECT});
+    }
+
+
     return {
         getUserList : getUserList,
         getUserByType : getUserByType,
@@ -131,7 +153,9 @@ var UserService = function(){
         getAllUsers: getAllUsers,
         getSelectedCourseByStudent:getSelectedCourseByStudent,
         scheduleCourse:scheduleCourse,
-        findScheduleCourse:findScheduleCourse
+        findScheduleCourse:findScheduleCourse,
+        cancelScheduledCourse: cancelScheduledCourse,
+        schedulePageByTeacher:schedulePageByTeacher
     }
 }();
 

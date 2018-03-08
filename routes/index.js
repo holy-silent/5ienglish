@@ -12,7 +12,7 @@ index.get('/', function(req, res, next) {
 index.get('/sys/startLesson', function(req, res, next) {
     var user = req.session.loginUser;
     var room_id = req.param('room_id');
-    res.render(Constant.startLesson, {room_id: room_id});
+    res.render(Constant.startLesson, {room_id: room_id, user:user});
 });
 
 index.get('/sys/sysIndex', function (req, res, next) {

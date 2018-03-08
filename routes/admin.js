@@ -20,8 +20,9 @@ user.get('/userList', function(req, res, next) {
 
 user.get('/selectedCourse', function (req, res, next) {
     var user = req.session.loginUser;
+    var message = req.param('message');
     UserService.getSelectedCourseByStudent(user).then(function (success) {
-        res.render(Constant.courseSelectedList, {user:user, data:success})
+        res.render(Constant.courseSelectedList, {user:user, data:success, message:message})
     });
 });
 
@@ -43,8 +44,35 @@ user.get('/selectedCourseSubmit', function (req, res, next) {
     var room_id = chinaTime().getTime();
 
     UserService.scheduleCourse(student_id, course_id, time, room_id).then(function () {
-        res.redirect('/admin/selectedCourse')
+        var message = '恭喜你，预约成功!';
+        res.redirect('/admin/selectedCourse?message=' + message);
     })
+})
+//取消计划课程(学生）
+user.get('/cancelScheduledCourse', function (req, res, next) {
+    var id = req.param('id');
+    UserService.cancelScheduledCourse(id).then(function () {
+        var message = '取消成功!';
+        res.redirect('/admin/selectedCourse?message=' + message);
+    })
+})
+
+//取消计划课程（老师）
+user.get('/cancelScheduledCourseByTeacher', function (req, res, next) {
+    var id = req.param('id');
+    UserService.cancelScheduledCourse(id).then(function () {
+        var message = '取消成功!';
+        res.redirect('/admin/schedulePageByTeacher?message=' + message);
+    })
+})
+
+//查看老师被预约的列表
+user.get('/schedulePageByTeacher',function (req, res, next) {
+    var user = req.session.loginUser;
+    var message = req.param('message');
+    UserService.schedulePageByTeacher(user).then(function (success) {
+        res.render(Constant.schedulePageByTeacher, {user:user, data:success, message: message});
+    });
 })
 
 module.exports = user;
