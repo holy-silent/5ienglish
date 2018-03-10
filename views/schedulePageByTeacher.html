@@ -46,7 +46,7 @@
             <td><%=data[i].schedule_date%></td>
             <td><%=data[i].student_name%></td>
             <td><a href="/admin/cancelScheduledCourseByTeacher?id=<%=data[i].schedule_id%>" class="btn btn-sm btn-outline-secondary selectCourse">取消</a>
-                <a href="/sys/startLesson?room_id=<%=data[i].room_id%>" target="_parent" class="btn btn-sm btn-outline-secondary selectCourse">开始上课</a>
+                <a href="/sys/startLesson?room_id=<%=data[i].room_id%>&student_id=<%=data[i].student_id%>&course_teacher=<%=data[i].course_teacher%>" target="_parent" class="btn btn-sm btn-outline-secondary selectCourse">开始上课</a>
             </td>
         </tr>
         <% }

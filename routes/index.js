@@ -12,7 +12,17 @@ index.get('/', function(req, res, next) {
 index.get('/sys/startLesson', function(req, res, next) {
     var user = req.session.loginUser;
     var room_id = req.param('room_id');
-    res.render(Constant.startLesson, {room_id: room_id, user:user});
+    var student_id = req.param('student_id');
+    var course_teacher = req.param('course_teacher');
+    var student, teacher;
+   UserService.getUserById(student_id).then(function (success) {
+       student = success[0];
+       UserService.getUserById(course_teacher).then(function (success1) {
+           teacher = success1[0];
+           res.render(Constant.startLesson, {room_id: room_id, user:user, student:student, teacher:teacher});
+       })
+   })
+
 });
 
 index.get('/sys/sysIndex', function (req, res, next) {

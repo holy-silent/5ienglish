@@ -10,11 +10,17 @@
     <meta name="keywords" content="5ienglish" />
     <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
+
+    <script type="text/javascript">
+        function reloadPage(){
+            location.reload()
+        }
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/sys/sysIndex">5i English</a>
-    <div style="color: #00CED1;">书山有路勤为径，学海无涯苦作舟</div>
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/sys/sysIndex">5i English在线课堂</a>
+    <div style="color: #00CED1;">学生：<b><%=student.name%></b>----老师：<b><%=teacher.name%></b></div>
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link" href="#" onClick="javascript:history.go(-1);">返回</a>
@@ -23,39 +29,46 @@
 </nav>
 <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-6 col-md-4 common-border">
-                <div style="height: 95px;">
-                    <input type="hidden" id="room-id" value="<%=room_id%>" placeholder="请用老师ID号作为房间名！"></br>
+            <div class="col-xs-5 col-md-3 common-border">
+                <div style="height: 45px;">
+                    <input type="hidden" id="room-id" value="<%=room_id%>">
+                    <input type="hidden" id="userName" value="<%=user.name%>">
+                    <input type="hidden" id="currentUserId" value="<%=user.id%>">
+                    <input type="hidden" id="student_name" value="<%=student.name%>">
+                    <input type="hidden" id="teacher_name" value="<%=teacher.name%>">
+                    <input type="hidden" id="teacher_id" value="<%=teacher.id%>">
+                    <input type="hidden" id="student_id" value="<%=student.id%>">
                     <% if (user.user_type == '1') {%>
                     <button type="button" id="open-room" class="btn btn-primary">打开课堂</button>
-                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-info">分享课件</button>
+                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-primary">分享课件</button>
+                    <button type="button" id="refresh" class="btn btn-info" onclick="reloadPage()">刷新</button>
                     <button type="button" id="join-room" class="btn btn-success" style="display: none;">加入课堂</button>
-                    <div id="room-urls"></div>
+                    <!--<div id="room-urls" style="display: none;"></div>-->
                     <% } else if (user.user_type == '0') {%>
                     <button type="button" id="open-room" class="btn btn-primary" style="display: none;">打开课堂</button>
                     <button type="button" id="btn-share-part-of-sreen" class="btn btn-info" style="display: none;">分享课件</button>
-                    <button type="button" id="join-room" class="btn btn-success">加入课堂</button>
-                    <div id="room-urls" style="display: none;"></div>
+
+                    <button type="button" id="join-room" class="btn btn-primary">加入课堂</button>
+                    <button type="button" id="refresh" class="btn btn-info" onclick="reloadPage()">刷新</button>
+                    <!--<div id="room-urls" style="display: none;"></div>-->
                     <% } %>
                 </div>
                 <div class="row" id="videos-container">
                 </div>
-                <!--
-                <div class="row align-self-end">
-                    <div class="chat-output">
-                    </div>
-                    <div style="margin-bottom: 2px;">
-                        <input type="text" id="input-text-chat" placeholder="请发言，按回车发送！" disabled>
-                    </div>
-                </div>
-                -->
+
             </div>
-            <div class="col-xs-12 col-md-8 common-border">
+            <div class="col-xs-11 col-md-7 common-border">
                 <% if (user.user_type == '0') {%>
                 <img id="shared-part-of-screen-preview">
                 <%} else if (user.user_type == '1') {%>
-                <iframe id="part-of-screen-to-be-shared" src="/demos/pptdemo/publish/demo.html" width="80%;" height="500px;"></iframe>
+                <iframe id="part-of-screen-to-be-shared" src="/demos/pptdemo/publish/demo.html" style="width: 780px; height: 560px;"></iframe>
                 <%}%>
+            </div>
+            <div class="col-xs-2 col-md-2 common-border">
+                    <textarea id="chat-output" class="chat-output" style="width:200px; height: 520px; font-size: 9px;" readonly></textarea>
+                    <div style="position:absolute; bottom: 8px;">
+                        <input type="text" id="input-text-chat" placeholder="输入内容，按回车发送！">
+                    </div>
             </div>
         </div>
 </div>
@@ -66,14 +79,29 @@
         <script src="/dev/screenshot.js"> </script>
 
         <script>
+
+            // ......................................................
+            // .......................user data........................
+            // ......................................................
+
+            var currentUserId = document.getElementById('currentUserId').value;
+            var teacherId = document.getElementById('teacher_id').value;
+            var studentId = document.getElementById('student_id').value;
+            var teacherName = document.getElementById('teacher_name').value;
+            var studentName = document.getElementById('student_name').value;
+
+            var isTeacher = (currentUserId == teacherId ? true:false);
+
             // ......................................................
             // .......................UI Code........................
             // ......................................................
 
             document.getElementById('open-room').onclick = function() {
                 disableInputButtons();
+
                 connection.open(document.getElementById('room-id').value, function() {
-                    showRoomURL(connection.sessionid);
+                    //                注释掉房间号
+//                    showRoomURL(connection.sessionid);
                 });
             };
 
@@ -93,24 +121,45 @@
             //     });
             // };
 
-//            document.getElementById('input-text-chat').onkeyup = function(e) {
-//                if (e.keyCode != 13) return;
-//
-//                // removing trailing/leading whitespace
-//                this.value = this.value.replace(/^\s+|\s+$/g, '');
-//                if (!this.value.length) return;
-//
-//                connection.send(this.value);
-//                appendDIV(this.value);
-//                this.value = '';
-//            };
+            document.getElementById('input-text-chat').onkeyup = function(e) {
+                if (e.keyCode != 13) return;
 
-//            var chatContainer = document.querySelector('.chat-output');                //updated by ydl
+                // removing trailing/leading whitespace
+                this.value = this.value.replace(/^\s+|\s+$/g, '');
+                if (!this.value.length) return;
+
+                connection.send(this.value);
+                appendDIV(this.value);
+                this.value = '';
+            };
+
+            var chatContainer = document.getElementById('chat-output');                //updated by ydl
+            var me = document.getElementById('userName').value;
+            var remoteUser;
+            if(isTeacher) {
+                me = teacherName;
+                remoteUser = studentName;
+            } else {
+                me = studentName;
+                remoteUser = teacherName;
+            }
 
             function appendDIV(event) {
                 var div = document.createElement('div');
-                div.innerHTML = event.data || event;
-                chatContainer.insertBefore(div, chatContainer.firstChild);
+
+                div.innerHTML = me + '：' + (event.data || event);
+                chatContainer.value += div.innerHTML + '\n';
+                div.tabIndex = 0;
+                div.focus();
+
+                document.getElementById('input-text-chat').focus();
+            }
+
+            function appendDIVRemote(event) {
+                var div = document.createElement('div');
+
+                div.innerHTML = remoteUser + '：' + (event.data || event);
+                chatContainer.value += div.innerHTML + '\n';
                 div.tabIndex = 0;
                 div.focus();
 
@@ -143,10 +192,6 @@
 
             connection.videosContainer = document.getElementById('videos-container');
             connection.onstream = function(event) {
-                if (++peopleNum>2) {
-                    alert('课堂已满！');
-                    return;
-                }
                 connection.videosContainer.appendChild(event.mediaElement);
                 event.mediaElement.play();
                 setTimeout(function() {
@@ -154,7 +199,7 @@
                 }, 5000);
             };
 
-            connection.onmessage = appendDIV;
+//            connection.onmessage = appendDIV;
             connection.filesContainer = document.getElementById('file-container');
 
             connection.onopen = function() {
@@ -177,21 +222,21 @@
             // ......................Handling Room-ID................
             // ......................................................
 
-            function showRoomURL(roomid) {
-                var roomHashURL = '#' + roomid;
-                var roomQueryStringURL = '?roomid=' + roomid;
-
-                // var html = '<h2>Unique URL for your room:</h2><br>';
-
-                // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
-                // html += '<br>';
-                // html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
-                var html = '课堂地址: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
-
-                var roomURLsDiv = document.getElementById('room-urls');
-                roomURLsDiv.innerHTML = html;
-                roomURLsDiv.style.display = 'block';
-            }
+//            function showRoomURL(roomid) {
+//                var roomHashURL = '#' + roomid;
+//                var roomQueryStringURL = '?roomid=' + roomid;
+//
+//                // var html = '<h2>Unique URL for your room:</h2><br>';
+//
+//                // html += 'Hash URL: <a href="' + roomHashURL + '" target="_blank">' + roomHashURL + '</a>';
+//                // html += '<br>';
+//                // html += 'QueryString URL: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+//                var html = '课堂地址: <a href="' + roomQueryStringURL + '" target="_blank">' + roomQueryStringURL + '</a>';
+//
+//                var roomURLsDiv = document.getElementById('room-urls');
+//                roomURLsDiv.innerHTML = html;
+//                roomURLsDiv.style.display = 'block';
+//            }
 
             (function() {
                 var params = {},
@@ -244,7 +289,12 @@
             };
             var sharedPartOfScreenPreview = document.getElementById('shared-part-of-screen-preview');
             connection.onmessage = function(event) {
-                sharedPartOfScreenPreview.src = event.data;
+                //在线交流、分享区域走同一个通道，故需要判断类型，区别处理   by vanpersie
+                if (event.data.indexOf('data:image/png') > -1) {
+                    sharedPartOfScreenPreview.src = event.data;
+                } else {
+                    appendDIVRemote(event);
+                }
             };
             var lastSharedScreenShot = '';
             connection.sharePartOfScreen = function(element) {

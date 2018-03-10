@@ -66,6 +66,15 @@ var UserService = function(){
             include:include
         });
     }
+    //根据ID获取课程实体
+    var getCourseById = function (courseId) {
+        return course.findAll({
+            where: {
+                id:courseId,
+                del_flag: '0'
+            }
+        });
+    }
 
     //得到所有课程
     var getCourseList = function (teacherName) {
@@ -133,7 +142,7 @@ var UserService = function(){
 
     //老师被预约的课程以及时间
     var schedulePageByTeacher = function (currentUser) {
-        var sql = 'SELECT s.id AS schedule_id, u.name AS student_name , s.schedule_date, c.course_name, s.room_id FROM sys_schedule s';
+        var sql = 'SELECT s.id AS schedule_id, u.id AS student_id, u.name AS student_name , s.schedule_date, c.course_name, s.room_id, c.course_teacher FROM sys_schedule s';
         sql += ' LEFT JOIN sys_user u ON s.student_id = u.id';
         sql += ' LEFT JOIN sys_course c ON c.id = s.course_id';
         sql += ' WHERE c.course_teacher = $1';
@@ -155,7 +164,8 @@ var UserService = function(){
         scheduleCourse:scheduleCourse,
         findScheduleCourse:findScheduleCourse,
         cancelScheduledCourse: cancelScheduledCourse,
-        schedulePageByTeacher:schedulePageByTeacher
+        schedulePageByTeacher:schedulePageByTeacher,
+        getCourseById: getCourseById
     }
 }();
 

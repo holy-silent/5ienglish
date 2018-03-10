@@ -34,26 +34,29 @@
                 </a>
               </li>
         <% if (user.user_type==Constant.userTypeStudent) { %>
+              <!--
               <li class="nav-item">
                 <a class="nav-link" href="/admin ">
                   <span data-feather="file"></span>
                   我的订单
                 </a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a class="nav-link" href="/admin/selectedCourse" target="main">
                   <span data-feather="shopping-cart"></span>
                   已选课程
                 </a>
               </li>
+              <!--
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="users"></span>
                   我的老师
                 </a>
               </li>
-
+              -->
         <% } else if (user.user_type==Constant.userTypeTeacher) {%>
+              <!--
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="shopping-cart"></span>
@@ -66,6 +69,7 @@
                   我的学生
                 </a>
               </li>
+              -->
               <li class="nav-item">
                 <a class="nav-link" href="/admin/schedulePageByTeacher" target="main">
                   <span data-feather="users"></span>

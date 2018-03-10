@@ -30,9 +30,12 @@ user.get('/schedule', function (req, res, next) {
     var user = req.session.loginUser;
     var student_id = req.param('student_id');
     var course_id = req.param('course_id');
-
-    UserService.findScheduleCourse(student_id, course_id).then(function (success) {
-        res.render(Constant.schedulePage, {student_id:student_id, course_id:course_id, data:success});
+    var course_teacher;
+    UserService.getCourseById(course_id).then(function (data) {
+        course_teacher = data[0].course_teacher;
+        UserService.findScheduleCourse(student_id, course_id).then(function (success) {
+            res.render(Constant.schedulePage, {student_id:student_id, course_id:course_id,course_teacher:course_teacher, data:success});
+        })
     })
 
 })

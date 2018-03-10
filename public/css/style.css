@@ -18,8 +18,9 @@ select {
 }
 
 #input-text-chat {
-    height: 35px;
-    width: 100%;
+    height: 32px;
+    width: 200px;
+    font-size: 9px;
 }
 .chat-output {
     height: 182px;
