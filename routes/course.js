@@ -6,6 +6,7 @@ var express = require('express');
 var course = express.Router();
 var Constant = require('../app/constant.js').Constant;
 var UserService = require('../app/sys/service/UserService.js').UserService;
+var CourseService = require('../app/sys/service/CourseService.js').CourseService;
 
 course.get('/', function(req, res, next) {
     var user = req.session.loginUser;
@@ -14,7 +15,7 @@ course.get('/', function(req, res, next) {
 
     if (teacherId==undefined) {
         //如果没有传老师ID，则查出所有课程
-        UserService.getCourseList().then(function (success) {
+        CourseService.getCourseList().then(function (success) {
             res.render(Constant.courseList, {user:user, teacher:undefined, data:success});
         }, function (error) {
             console.log(error);
@@ -23,7 +24,7 @@ course.get('/', function(req, res, next) {
     } else {
         UserService.getUserById(teacherId).then(function (success) {
             var teacher = success[0]
-            UserService.getCourseByTeacher(teacherId).then(function (success) {
+            CourseService.getCourseByTeacher(teacherId).then(function (success) {
                 res.render(Constant.courseList, {user:user, teacher:teacher, data:success});
             }, function (error) {
                 console.log(error);
@@ -45,7 +46,7 @@ course.post('/selectCourse', function(req, res, next) {
         result.response_msg='请先登录网站！';
         res.json(result);
     } else {
-        UserService.selectCourse(user, courseId).then(function (success) {
+        CourseService.selectCourse(user, courseId).then(function (success) {
             var result = {};
             result.response_code='0000';
             result.response_msg='success';

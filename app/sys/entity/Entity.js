@@ -9,6 +9,7 @@ var dbutil = require('../../database/BaseDao.js');
 var Sequelize = require('sequelize');
 var moment = require('moment');
 
+//用户表
 var UserEntity = dbutil.define('sys_user', {
     id: {
         type: Sequelize.INTEGER,
@@ -18,6 +19,7 @@ var UserEntity = dbutil.define('sys_user', {
     login_name: Sequelize.STRING,
     // password: Sequelize.STRING,
     name: Sequelize.STRING,
+    eng_name: Sequelize.STRING,//英文名
     user_type: Sequelize.STRING, // 0 学生   1 教室    2 管理员
     photo: Sequelize.STRING,
     remarks: Sequelize.STRING,
@@ -27,6 +29,7 @@ var UserEntity = dbutil.define('sys_user', {
     createdAt: 'createDate',
     updatedAt: 'updateDate'});
 
+//课程表
 var CourseEntity = dbutil.define('sys_course', {
     id: {
         type: Sequelize.INTEGER,
@@ -50,6 +53,7 @@ var CourseEntity = dbutil.define('sys_course', {
     createdAt: 'createDate',
     updatedAt: 'updateDate'});
 
+//选课表
 var CourseSelectionEntity = dbutil.define('sys_course_selection', {
     student_id: {type:Sequelize.INTEGER, primaryKey: true},
     course_id: {type:Sequelize.INTEGER, primaryKey: true},
@@ -67,11 +71,16 @@ var CourseSelectionEntity = dbutil.define('sys_course_selection', {
     createdAt: 'create_date',
     updatedAt: 'update_date'});
 
-
+//排课表
 var CourseScheduleEntity = dbutil.define('sys_schedule', {
     student_id:Sequelize.INTEGER,
     course_id:Sequelize.INTEGER,
-    schedule_date:Sequelize.STRING,
+    schedule_date:{
+        type:Sequelize.DATE,
+        get() {
+            return moment(this.getDataValue('create_date')).format('YYYY-MM-DD HH:mm');
+        }
+    },
     room_id:Sequelize.STRING
 }, {freezeTableName: true,//设置为true时，sequelize不会改变表名，否则可能会按其规则有所调整
     timestamps: true, //为模型添加 createdAt 和 updatedAt 两个时间戳字段

@@ -16,7 +16,7 @@
     </script>
 </head>
 <body>
-<h4>已预约课程表</h4>
+<h4>Class Schedule Card</h4>
 <%if (message!=null && message!=undefined) {%>
 <div class="alert alert-warning alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -27,11 +27,11 @@
     <table class="table">
         <thead>
         <tr>
-            <th>序号</th>
-            <th>课程</th>
-            <th>预约时间</th>
-            <th>学生姓名</th>
-            <th>操作</th>
+            <th>#</th>
+            <th>Class Name</th>
+            <th>Time Of Appointment</th>
+            <th>Student</th>
+            <th>Operation</th>
         </tr>
         </thead>
         <tbody>
@@ -44,14 +44,14 @@
             <td><%=i+1%></td>
             <td><%=data[i].course_name%></td>
             <td><%=data[i].schedule_date%></td>
-            <td><%=data[i].student_name%></td>
-            <td><a href="/admin/cancelScheduledCourseByTeacher?id=<%=data[i].schedule_id%>" class="btn btn-sm btn-outline-secondary selectCourse">取消</a>
-                <a href="/sys/startLesson?room_id=<%=data[i].room_id%>&student_id=<%=data[i].student_id%>&course_teacher=<%=data[i].course_teacher%>" target="_parent" class="btn btn-sm btn-outline-secondary selectCourse">开始上课</a>
+            <td><%=data[i].student_engname%></td>
+            <td><a href="/admin/cancelScheduledCourseByTeacher?id=<%=data[i].schedule_id%>" class="btn btn-sm btn-outline-secondary selectCourse">Cancel</a>
+                <a href="/sys/startLesson?room_id=<%=data[i].room_id%>&student_id=<%=data[i].student_id%>&course_teacher=<%=data[i].course_teacher%>" target="_parent" class="btn btn-sm btn-outline-secondary selectCourse">Start The Class</a>
             </td>
         </tr>
         <% }
         } else {%>
-            <td>暂无预约</td>
+            <td>Empty</td>
         <% }%>
         </tbody>
     </table>

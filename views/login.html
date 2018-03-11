@@ -7,7 +7,7 @@
     <meta name="author" content="">
     <link rel="icon" href="/favicon.ico">
 
-    <title>登录5i English</title>
+    <title>5i English</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap-4.0.0/css/bootstrap.min.css" rel="stylesheet">
@@ -18,23 +18,26 @@
 
   <body class="text-center">
     <form class="form-signin" href="/login" method="post">
-      <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
-      <h1 class="h3 mb-3 font-weight-normal">登录 5i English</h1>
+      <!--<img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">-->
+      <img class="mb-4" src="/img/logo_small.png" alt="5i English" width="160" height="140">
+      <h1 class="h3 mb-3 font-weight-normal">Sign In(请登录)</h1>
       <% if(err != undefined) { %>
       <div class="alert alert-info" role="alert"><%=err%></div>
       </p>
       <% } %>
-      <label for="inputEmail" class="sr-only">用户名/手机号</label>
-      <input type="text" name="username" id="inputEmail" class="form-control" placeholder="用户名/手机号" required autofocus>
-      <label for="inputPassword" class="sr-only">密码</label>
-      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="密码" required>
+      <label for="inputEmail" class="sr-only">UserName(用户名)</label>
+      <input type="text" name="username" id="inputEmail" class="form-control" placeholder="UserName(用户名)" required autofocus>
+      <label for="inputPassword" class="sr-only">Password(密码)</label>
+      <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password(密码)" required>
+      <!--
       <div class="checkbox mb-3">
         <label>
           <input type="checkbox" value="remember-me"> 记住我
         </label>
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">立即登录</button>
-      <p class="mt-5 mb-3 text-muted">&copy; 2018-2020</p>
+      -->
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Submit(立即登录)</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 5i english 2018-2020</p>
     </form>
 
   </body>
