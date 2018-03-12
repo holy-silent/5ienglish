@@ -18,15 +18,39 @@
     </script>
 </head>
 <body>
+
+<!--<% if (user.user_type == '0') { %>-->
+<!--<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">-->
+    <!--<a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/sys/sysIndex">5i English在线课堂</a>-->
+    <!--<div style="color: #00CED1;">学生：<b><%=student.eng_name%></b>&#45;&#45;&#45;&#45;老师：<b><%=teacher.eng_name%></b></div>-->
+    <!--<ul class="navbar-nav px-3">-->
+        <!--<li class="nav-item text-nowrap">-->
+            <!--<a class="nav-link" href="#" onClick="javascript:history.go(-1);">返回</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+<!--</nav>-->
+<!--<% } %>-->
+<% if (user.user_type == '1') {%>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/sys/sysIndex">5i English online class</a>
+    <div style="color: #00CED1;">Student：<b><%=student.eng_name%></b>----Teacher：<b><%=teacher.eng_name%></b></div>
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#" onClick="javascript:history.go(-1);">Return</a>
+        </li>
+    </ul>
+    </nav>
+<%} else if (user.user_type == '0') { %>
 <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
     <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/sys/sysIndex">5i English在线课堂</a>
-    <div style="color: #00CED1;">学生：<b><%=student.name%></b>----老师：<b><%=teacher.name%></b></div>
+    <div style="color: #00CED1;">学生：<b><%=student.eng_name%></b>----老师：<b><%=teacher.eng_name%></b></div>
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
             <a class="nav-link" href="#" onClick="javascript:history.go(-1);">返回</a>
         </li>
     </ul>
 </nav>
+<%}%>
 <div class="container-fluid">
         <div class="row">
             <div class="col-xs-5 col-md-3 common-border">
@@ -39,9 +63,9 @@
                     <input type="hidden" id="teacher_id" value="<%=teacher.id%>">
                     <input type="hidden" id="student_id" value="<%=student.id%>">
                     <% if (user.user_type == '1') {%>
-                    <button type="button" id="open-room" class="btn btn-primary">打开课堂</button>
-                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-primary">分享课件</button>
-                    <button type="button" id="refresh" class="btn btn-info" onclick="reloadPage()">刷新</button>
+                    <button type="button" id="open-room" class="btn btn-primary">Open Class</button>
+                    <button type="button" id="btn-share-part-of-sreen" class="btn btn-primary">Share PPT</button>
+                    <button type="button" id="refresh" class="btn btn-info" onclick="reloadPage()">Refresh</button>
                     <button type="button" id="join-room" class="btn btn-success" style="display: none;">加入课堂</button>
                     <!--<div id="room-urls" style="display: none;"></div>-->
                     <% } else if (user.user_type == '0') {%>
@@ -67,12 +91,16 @@
             <div class="col-xs-2 col-md-2 common-border">
                     <textarea id="chat-output" class="chat-output" style="width:200px; height: 520px; font-size: 9px;" readonly></textarea>
                     <div style="position:absolute; bottom: 8px;">
+                        <% if (user.user_type == '0') {%>
                         <input type="text" id="input-text-chat" placeholder="输入内容，按回车发送！">
+                        <%} else if (user.user_type == '1') {%>
+                        <input type="text" id="input-text-chat" placeholder="Input Something And Press Enter！">
+                        <%}%>
                     </div>
             </div>
         </div>
 </div>
-        <script src="/RTCMultiConnection.min.js"></script>
+        <script src="/RTCMultiConnection.js"></script>
         <script src="/dev/PubNubConnection.js"></script>
         <script src="/dev/FileBufferReader.js"></script>
         <script src="/dev/websocket.js"></script>
@@ -188,6 +216,9 @@
                 OfferToReceiveAudio: true,
                 OfferToReceiveVideo: true
             };
+
+            connection.bandwidth.video = 8 * 8 *1024;
+            connection.bandwidth.screen = 250;
 
             connection.videosContainer = document.getElementById('videos-container');
             connection.onstream = function(event) {
